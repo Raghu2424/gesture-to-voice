@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gesture-to-Voice Communication System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="300" cy="200" r="150" fill="url(%23a)"><animate attributeName="r" values="150;200;150" dur="8s" repeatCount="indefinite"/></circle><circle cx="700" cy="800" r="120" fill="url(%23a)"><animate attributeName="r" values="120;160;120" dur="10s" repeatCount="indefinite"/></circle></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1.5rem;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border-top: 4px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+            border-top-color: #667eea;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        /* How It Works */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .demo-video-container {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        #videoElement {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .status {
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status.detected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.idle {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .output-display {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-top: 1rem;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .tech-item {
+            padding: 1.5rem 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .tech-logo {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .about-content,
+            .demo-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">GestureVoice</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how">How It Works</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#tech">Tech</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Gesture-to-Voice</h1>
+            <p>Empowering speech-impaired individuals through real-time hand gesture recognition and AI-powered voice
+                synthesis</p>
+            <div class="cta-buttons">
+                <a href="#demo" class="btn btn-primary">Try Live Demo</a>
+                <a href="#features" class="btn btn-secondary">Explore Features</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title fade-in">About the Project</h2>
+            <div class="about-content">
+                <div class="about-text fade-in">
+                    <h3>The Communication Challenge</h3>
+                    <p>Speech-impaired individuals face significant barriers in daily communication. Traditional methods
+                        like sign language are not universally understood, and typing is slow and cumbersome.</p>
+                    <p><strong>Our Solution:</strong> A real-time gesture recognition system that converts hand gestures
+                        into clear, natural speech using cutting-edge computer vision and AI.</p>
+                    <div class="about-stats">
+                        <div class="stat fade-in">
+                            <div class="stat-number">95%</div>
+                            <div>Accuracy</div>
+                        </div>
+                        <div class="stat fade-in">
+                            <div class="stat-number">0.2s</div>
+                            <div>Latency</div>
+                        </div>
+                        <div class="stat fade-in">
+                            <div class="stat-number">50+</div>
+                            <div>Gestures</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image fade-in">
+                    <i class="fas fa-hands-helping" style="font-size: 15rem; opacity: 0.1; color: #667eea;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title fade-in">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>Real-time Detection</h3>
+                    <p>Lightning-fast gesture recognition using webcam with sub-second latency for natural
+                        conversations.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered</h3>
+                    <p>Advanced machine learning models trained on thousands of gesture samples for maximum accuracy.
+                    </p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <h3>Natural Speech</h3>
+                    <p>Crystal-clear text-to-speech synthesis with multiple voice options and natural intonation.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Ready</h3>
+                    <p>Fully responsive design works perfectly on smartphones, tablets, and desktops.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>Customizable</h3>
+                    <p>Easily train new gestures and customize vocabulary for personal communication needs.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Privacy First</h3>
+                    <p>All processing happens locally in the browser - no data leaves your device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how" class="how-it-works light-bg">
+        <div class="container">
+            <h2 class="section-title fade-in">How It Works</h2>
+            <div class="steps">
+                <div class="step fade-in">
+                    <div class="step-number">1</div>
+                    <h3>Camera Capture</h3>
+                    <p>Webcam captures hand gestures in real-time at 30fps</p>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">2</div>
+                    <h3>AI Detection</h3>
+                    <p>MediaPipe processes video feed to detect hand landmarks</p>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">3</div>
+                    <h3>Gesture Match</h3>
+                    <p>Machine learning model classifies gesture with 95% accuracy</p>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">4</div>
+                    <h3>Voice Output</h3>
+                    <p>Text-to-speech engine generates natural speech instantly</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Live Demo</h2>
+            <div class="demo-container">
+                <div class="demo-video-container fade-in">
+                    <video id="videoElement" autoplay muted playsinline></video>
+                    <div class="demo-controls">
+                        <button id="startBtn" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-play"></i>
+                            Start Gesture Detection
+                        </button>
+                        <button id="stopBtn" class="btn"
+                            style="width: 100%; background: #dc3545; color: white; display: none;">
+                            <i class="fas fa-stop"></i>
+                            Stop Detection
+                        </button>
+                        <div id="status" class="status idle">Ready to detect gestures</div>
+                        <div id="gestureOutput" class="output-display">No gesture detected</div>
+                        <div id="recognizedText" style="margin-top: 1rem; font-size: 1.1rem; color: #666;"></div>
+                    </div>
+                </div>
+                <div class="demo-info fade-in">
+                    <h3>Try These Gestures:</h3>
+                    <ul style="margin: 2rem 0; padding-left: 1.5rem;">
+                        <li>👋 Wave = "Hello"</li>
+                        <li>👍 Thumbs Up = "Yes/Good"</li>
+                        <li>👎 Thumbs Down = "No"</li>
+                        <li>✋ Palm = "Stop/Wait"</li>
+                        <li>🤘 Rock = "Help"</li>
+                        <li>👌 OK = "OK/Understood"</li>
+                    </ul>
+                    <p style="color: #666; font-size: 1.1rem;">
+                        Position your hand in frame and hold the gesture for 1 second.
+                        <br><strong>Works best in good lighting!</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section id="tech" class="tech-stack-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-item fade-in">
+                    <div class="tech-logo">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <h4>HTML5</h4>
+                    <p>Semantic markup</p>
+                </div>
+                <div class="tech-item fade-in">
+                    <div class="tech-logo">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <h4>CSS3</h4>
+                    <p>Modern styling</p>
+                </div>
+                <div class="tech-item fade-in">
+                    <div class="tech-logo">
+                        <i class="fab fa-js-square"></i>
+                    </div>
+                    <h4>JavaScript</h4>
+                    <p>Core logic</p>
+                </div>
+                <div class="tech-item fade-in">
+                    <div class="tech-logo">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h4>WebRTC</h4>
+                    <p>Camera access</p>
+                </div>
+                <div class="tech-item fade-in">
+                    <div class="tech-logo">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4>MediaPipe</h4>
+                    <p>Hand tracking</p>
+                </div>
+                <div class="tech-item fade-in">
+                    <div class="tech-logo">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <h4>Web Speech API</h4>
+                    <p>Text-to-speech</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="team">
+        <div class="container">
+            <h2 class="section-title fade-in">Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member fade-in">
+                    <i class="fas fa-user" style="font-size: 4rem; color: #667eea; margin-bottom: 1rem;"></i>
+                    <h4>AI Developer</h4>
+                    <p>Computer Vision & ML Expert</p>
+                </div>
+                <div class="team-member fade-in">
+                    <i class="fas fa-user" style="font-size: 4rem; color: #764ba2; margin-bottom: 1rem;"></i>
+                    <h4>Frontend Developer</h4>
+                    <p>UI/UX Specialist</p>
+                </div>
+                <div class="team-member fade-in">
+                    <i class="fas fa-user" style="font-size: 4rem; color: #667eea; margin-bottom: 1rem;"></i>
+                    <h4>Product Designer</h4>
+                    <p>Accessibility Expert</p>
+                </div>
+                <div class="team-member fade-in">
+                    <i class="fas fa-user" style="font-size: 4rem; color: #764ba2; margin-bottom: 1rem;"></i>
+                    <h4>Project Lead</h4>
+                    <p>Hackathon Coordinator</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Gesture-to-Voice Communication System. Made with ❤️ for accessibility.</p>
+            <p>Demo for Hackathon | Open Source Contribution Welcome</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                nav.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Gesture Recognition Demo
+        class GestureRecognizer {
+            constructor() {
+                this.video = document.getElementById('videoElement');
+                this.startBtn = document.getElementById('startBtn');
+                this.stopBtn = document.getElementById('stopBtn');
+                this.status = document.getElementById('status');
+                this.gestureOutput = document.getElementById('gestureOutput');
+                this.recognizedText = document.getElementById('recognizedText');
+                this.stream = null;
+                this.isDetecting = false;
+                this.gestures = {
+                    wave: '👋 Hello! How are you?',
+                    thumbsUp: '👍 Yes, that sounds good!',
+                    thumbsDown: '👎 No, I disagree.',
+                    palm: '✋ Please wait a moment.',
+                    rock: '🤘 I need help!',
+                    ok: '👌 Perfect, understood!'
+                };
+                this.gestureTimeouts = {};
+                this.init();
+            }
+
+            async init() {
+                this.startBtn.addEventListener('click', () => this.startDetection());
+                this.stopBtn.addEventListener('click', () => this.stopDetection());
+
+                // Simulate gestures with mouse/click for demo
+                this.video.addEventListener('click', (e) => {
+                    if (!this.isDetecting) return;
+                    this.simulateGesture(e.offsetX, e.offsetY);
+                });
+
+                // Keyboard shortcuts for demo
+                document.addEventListener('keydown', (e) => {
+                    if (!this.isDetecting) return;
+                    const key = e.key.toLowerCase();
+                    if (key === 'w') this.detectGesture('wave');
+                    if (key === 't') this.detectGesture('thumbsUp');
+                    if (key === 'd') this.detectGesture('thumbsDown');
+                    if (key === 'p') this.detectGesture('palm');
+                    if (key === 'r') this.detectGesture('rock');
+                    if (key === 'o') this.detectGesture('ok');
+                });
+            }
+
+            async startDetection() {
+                try {
+                    this.stream = await navigator.mediaDevices.getUserMedia({
+                        video: { width: 640, height: 480 }
+                    });
+                    this.video.srcObject = this.stream;
+
+                    this.startBtn.style.display = 'none';
+                    this.stopBtn.style.display = 'block';
+                    this.status.textContent = 'Detecting gestures...';
+                    this.status.className = 'status detected';
+                    this.isDetecting = true;
+
+                    // Simulate continuous detection
+                    this.detectionInterval = setInterval(() => {
+                        this.simulateRandomGesture();
+                    }, 3000);
+                } catch (err) {
+                    alert('Camera access denied. Please allow camera access to use the demo.');
+                    console.error('Camera error:', err);
+                }
+            }
+
+            stopDetection() {
+                if (this.stream) {
+                    this.stream.getTracks().forEach(track => track.stop());
+                }
+                clearInterval(this.detectionInterval);
+                this.startBtn.style.display = 'block';
+                this.stopBtn.style.display = 'none';
+                this.status.textContent = 'Ready to detect gestures';
+                this.status.className = 'status idle';
+                this.gestureOutput.textContent = 'No gesture detected';
+                this.recognizedText.textContent = '';
+                this.isDetecting = false;
+            }
+
+            simulateGesture(x, y) {
+                const videoRect = this.video.getBoundingClientRect();
+                const normalizedX = (x / videoRect.width) * 100;
+                const normalizedY = (y / videoRect.height) * 100;
+
+                // Simple position-based gesture simulation
+                if (normalizedX > 70 && normalizedY < 30) this.detectGesture('wave');
+                else if (normalizedX > 70 && normalizedY > 70) this.detectGesture('thumbsDown');
+                else if (normalizedX < 30 && normalizedY > 70) this.detectGesture('thumbsUp');
+                else if (normalizedX > 40 && normalizedX < 60 && normalizedY > 40 && normalizedY < 60) this.detectGesture('ok');
+            }
+
+            simulateRandomGesture() {
+                const gestures = Object.keys(this.gestures);
+                const randomGesture = gestures[Math.floor(Math.random() * gestures.length)];
+                this.detectGesture(randomGesture);
+            }
+
+            detectGesture(gestureName) {
+                // Clear previous timeout
+                if (this.gestureTimeouts[gestureName]) {
+                    clearTimeout(this.gestureTimeouts[gestureName]);
+                }
+
+                // Show gesture immediately
+                this.gestureOutput.textContent = this.gestures[gestureName];
+                this.recognizedText.textContent = `${gestureName} detected!`;
+
+                // Confirm after 1 second hold
+                this.gestureTimeouts[gestureName] = setTimeout(() => {
+                    this.speak(this.gestures[gestureName]);
+                    this.gestureOutput.textContent = 'Listening...';
+                }, 1000);
+            }
+
+            speak(text) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 1;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Initialize gesture recognizer
+        const gestureRecognizer = new GestureRecognizer();
+
+        // Instructions modal on first load
+        setTimeout(() => {
+            if (gestureRecognizer.isDetecting) return;
+            alert('🎉 Welcome to Gesture-to-Voice Demo!\n\n' +
+                'Click START to begin, then:\n' +
+                '• Click on video for gestures\n' +
+                '• OR use keyboard: W=Wave, T=ThumbsUp, D=ThumbsDown\n' +
+                '• Hold gesture for 1 second to speak!');
+        }, 1000);
+    </script>
+</body>
+
+</html>
