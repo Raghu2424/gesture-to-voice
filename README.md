@@ -51,6 +51,11 @@ Feature                           Status                 Demo
 
 <div align="center"> ``` Frontend: HTML5 + CSS3 + Vanilla JS Camera: WebRTC API Gestures: Simulation (MediaPipe-ready) Voice: Web Speech Synthesis Deploy: Netlify CDN ``` </div>
 
+📱 Mobile Demo Links
+
+Desktop: https://exquisite-bubblegum-083708.netlify.app/
+Mobile: Same link (auto-responsive!)
+GitHub: https://github.com/Raghu2424/gesture-to-voice
 
 👥 Team
 
