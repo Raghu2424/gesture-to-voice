@@ -67,7 +67,7 @@ Deployment: Netlify (Global CDN)
 
 ## **🔗 Your Final Links:**
 
-Live App: https://exquisite-bubblegum-083708.netlify.app/ GitHub: https://github.com/YOUR_USERNAME/gesture-to-voice
+Live App: https://exquisite-bubblegum-083708.netlify.app/ GitHub: https://github.com/Raghu2424/gesture-to-voice
 
 
 
