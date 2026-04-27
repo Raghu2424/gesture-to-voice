@@ -23,6 +23,14 @@ Real-time **hand gesture recognition** → **AI-powered speech output** for spee
 4️⃣ Watch text + SPEECH output!
 
 
+
+Hackathon Submission:
+
+├── Demo: https://exquisite-bubblegum-083708.netlify.app/
+├── Code: https://github.com/Raghu2424/gesture-to-voice
+└── Team: Raghu2424
+          
+
 **💡 Pro Tip:** Use keyboard - `W` (wave), `T` (thumbs), `D` (down), `O` (OK)
 
 Feature                           Status                 Demo
