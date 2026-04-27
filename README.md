@@ -44,6 +44,11 @@ Feature                           Status                 Demo
 <div align="center"> ``` Frontend: HTML5 + CSS3 + Vanilla JS Camera: WebRTC API Gestures: Simulation (MediaPipe-ready) Voice: Web Speech Synthesis Deploy: Netlify CDN ``` </div>
 
 
+👥 Team
+
+Raghu2424 - Fullstack Developer
+
+
 📊 Performance Stats
 
 ⚡ Latency: 0.2 seconds
