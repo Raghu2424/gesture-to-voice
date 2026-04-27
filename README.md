@@ -65,4 +65,9 @@ Deployment: Netlify (Global CDN)
 5. 📱 Visual feedback + status updates
 
 
+## **🔗 Your Final Links:**
+
+Live App: https://exquisite-bubblegum-083708.netlify.app/ GitHub: https://github.com/YOUR_USERNAME/gesture-to-voice
+
+
 
